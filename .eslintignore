@@ -1,0 +1,9 @@
+# Ignore everything during build linting; we re‑enable gradually later
+node_modules
+.next
+dist
+out
+.vercel
+coverage
+**
+

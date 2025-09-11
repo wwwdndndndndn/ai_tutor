@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { fetchClasses, importClassesCsv } from "@/features/classes/mocks";
 import { fetchStudents, importStudentsFile } from "@/features/students/mocks";
@@ -20,12 +19,12 @@ export default function DataHubPage() {
   };
   const exportStudents = async () => {
     const d = await fetchStudents({ page: 1, pageSize: 9999 });
-    const rows = d.items.map((s: any) => [s.id, s.name, s.email, s.studentNo ?? "", s.classId, s.joinedAt]);
+    const rows = d.items.map((s) => [s.id, s.name, s.email, (s as any).studentNo ?? "", s.classId, s.joinedAt]);
     downloadCsv("students.csv", [["ID","Name","Email","StudentNo","ClassID","JoinedAt"], ...rows]);
   };
   const exportAssignments = async () => {
     const d = await fetchAssignments({ page: 1, pageSize: 9999 });
-    const rows = d.items.map((a: any) => [a.id, a.title, a.knowledge ?? "", a.status, a.dueAt, a.createdAt]);
+    const rows = d.items.map((a) => [a.id, a.title, (a as any).knowledge ?? "", a.status, a.dueAt, a.createdAt]);
     downloadCsv("assignments.csv", [["ID","Title","Knowledge","Status","DueAt","CreatedAt"], ...rows]);
   };
 
@@ -45,7 +44,7 @@ export default function DataHubPage() {
     try {
       const { total, success, failed } = await importClassesCsv(file);
       toast.success(`导入完成：共 ${total}，成功 ${success}，失败 ${failed}`);
-    } catch (err: any) {
+    } catch (err) {
       toast.error(err?.message ?? "导入失败");
     } finally {
       e.currentTarget.value = "";
@@ -57,7 +56,7 @@ export default function DataHubPage() {
     try {
       const { total, success, failed } = await importStudentsFile(file);
       toast.success(`导入完成：共 ${total}，成功 ${success}，失败 ${failed}`);
-    } catch (err: any) {
+    } catch (err) {
       toast.error(err?.message ?? "导入失败");
     } finally {
       e.currentTarget.value = "";
@@ -115,4 +114,3 @@ function downloadCsv(filename: string, rows: (string | number)[][]) {
   a.click();
   URL.revokeObjectURL(a.href);
 }
-
